@@ -15,6 +15,7 @@ namespace cube_lut
         static int blueStep;
         static  SKColor[] pixelArray;
         static  Dictionary<SKColor,int> lookup;
+        static List<int> identityMap;
         static public SKBitmap GenerateClutImage(int level)
         {
             var cube_size = level * level;
@@ -81,7 +82,36 @@ namespace cube_lut
        
         }
 
+        static public void GenerateIdentityMap(int level)
+        {
+            identityMap = new List<int>();
+            var cube_size = level * level;
+            var image_size = level * level * level;
+            //data = p = malloc((sizeof *data) * image_size * image_size * 3);
+            var image = new SKBitmap(image_size, image_size);
 
+            int i = 0;
+            for (var blue = 0; blue < cube_size; blue++)
+            {
+                for (var green = 0; green < cube_size; green++)
+                {
+                    for (var red = 0; red < cube_size; red++)
+                    {
+                        i++;
+                        if (CheckDivisible(red,level) && CheckDivisible(green, level) && CheckDivisible(blue, level) ) { identityMap.Add(i); }
+                        
+                       
+                    }
+                }
+            }
+
+
+        }
+
+        static public bool CheckDivisible(int val,int div)
+        {
+            return ((val % div) == 0  );
+        }
         static public List<string> ConvertClutImageToCube(string imagepath)
         {
             var bitmap = SKBitmap.Decode(imagepath);
@@ -99,45 +129,24 @@ namespace cube_lut
             data.Add("DOMAIN_MAX 1.0 1.0 1.0");
 
 
-            redStep = (int)lutSize + 1;
-            greenStep = (int)Math.Pow(lutSize, 2) * ((int)lutSize + 1);
-            blueStep = (int)Math.Pow(lutSize, 4) * ((int)lutSize + 1);
+            //var cubesize = lutSize * lutSize;
+            //redStep = (int)cubesize;
+            //greenStep = (int)Math.Pow(cubesize, 2) * ((int)cubesize );
+            //blueStep = (int)Math.Pow(cubesize, 4) * ((int)cubesize + 1);
             pixelArray = bitmap.Pixels;
 
 
-            Generatelookup((int)lutSize);
+            //Generatelookup((int)lutSize);
+           
+           
 
-            for (double blue = 0; blue < lutSize; blue++)
+             GenerateIdentityMap((int)lutSize);
+
+            foreach (var j in identityMap)
             {
-                for (double green = 0; green < lutSize; green++)
-                {
-                    for (double red = 0; red < lutSize; red++)
-                    {
-                        var R = (byte)(((float)red / (float)(lutSize - 1)) * 255);
-                        var G = (byte)(((float)green / (float)(lutSize - 1)) * 255);
-                        var B = (byte)(((float)blue / (float)(lutSize - 1)) * 255);
-                        
-                        var color = new SKColor(R, G, B);
-                        if (lookup.ContainsKey(color))
-                        {
-                            var i = bitmap.Pixels[lookup[color]];
-                            data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
-                        }
-                        else
-                        {
-                            data.Add(string.Format("{0} {1} {2}", color.Red / 255.0, color.Green / 255.0, color.Blue / 255.0));
-                        }
-                        
-                    }
-                }
+                var i = pixelArray[j-1];
+                data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
             }
-
-            //  Generatelookup((int)lutSize);
-
-            //foreach (var i in bitmap.Pixels)
-            //{
-            //    data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
-            //}
 
 
 
