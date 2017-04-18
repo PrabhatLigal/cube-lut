@@ -24,14 +24,18 @@ namespace cube_lut_wpf
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        List<int> LutSize = Enumerable.Range(2, 19).ToList();
         public MainWindow()
         {
             InitializeComponent();
+            LutSizeCombo.ItemsSource = LutSize;
+            LutSizeCombo.SelectedIndex = (int)(LutSize.Count/2)-1;
         }
 
         private void GenerateImage_Click(object sender, RoutedEventArgs e)
         {
-            int lut_size = 16;
+            int lut_size = (int)LutSizeCombo.SelectedItem;
             var image = Hald.GenerateClutImage(lut_size);
             SKImage img = SKImage.FromBitmap(image);
             SKData data = img.Encode(SKImageEncodeFormat.Png, 90);

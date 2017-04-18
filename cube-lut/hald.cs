@@ -10,11 +10,11 @@ namespace cube_lut
 {
     public class Hald
     {
-        static int redStep;
-        static int greenStep;
-        static int blueStep;
+        //static int redStep;
+        //static int greenStep;
+        //static int blueStep;
         static  SKColor[] pixelArray;
-        static  Dictionary<SKColor,int> lookup;
+       // static  Dictionary<SKColor,int> lookup;
         static List<int> identityMap;
         static public SKBitmap GenerateClutImage(int level)
         {
@@ -48,39 +48,39 @@ namespace cube_lut
             return image;
         }
 
-        static public void Generatelookup(int level)
-        {
-            lookup = new Dictionary<SKColor, int>();
-            var cube_size = level * level;
-            var image_size = level * level * level;
-            //data = p = malloc((sizeof *data) * image_size * image_size * 3);
-            var image = new SKBitmap(image_size, image_size);
+        //static public void Generatelookup(int level)
+        //{
+        //    lookup = new Dictionary<SKColor, int>();
+        //    var cube_size = level * level;
+        //    var image_size = level * level * level;
+        //    //data = p = malloc((sizeof *data) * image_size * image_size * 3);
+        //    var image = new SKBitmap(image_size, image_size);
 
-            int i = 0;
-            for (var blue = 0; blue < cube_size; blue++)
-            {
-                for (var green = 0; green < cube_size; green++)
-                {
-                    for (var red = 0; red < cube_size; red++)
-                    {
-                        var R = (byte)(((float)red / (float)(cube_size - 1)) * 255);
-                        var G = (byte)(((float)green / (float)(cube_size - 1)) * 255);
-                        var B = (byte)(((float)blue / (float)(cube_size - 1)) * 255);
+        //    int i = 0;
+        //    for (var blue = 0; blue < cube_size; blue++)
+        //    {
+        //        for (var green = 0; green < cube_size; green++)
+        //        {
+        //            for (var red = 0; red < cube_size; red++)
+        //            {
+        //                var R = (byte)(((float)red / (float)(cube_size - 1)) * 255);
+        //                var G = (byte)(((float)green / (float)(cube_size - 1)) * 255);
+        //                var B = (byte)(((float)blue / (float)(cube_size - 1)) * 255);
 
-                        // var pos = red + green + blue;
+        //                // var pos = red + green + blue;
 
-                       // var x = i % image_size;
-                       // var y = i / image_size;
-                        var color = new SKColor(R, G, B);
-                        lookup.Add(color, i);
-                       // image.SetPixel(x, y, color);
-                        i++;
-                    }
-                }
-            }
+        //               // var x = i % image_size;
+        //               // var y = i / image_size;
+        //                var color = new SKColor(R, G, B);
+        //                lookup.Add(color, i);
+        //               // image.SetPixel(x, y, color);
+        //                i++;
+        //            }
+        //        }
+        //    }
 
        
-        }
+       // }
 
         static public void GenerateIdentityMap(int level)
         {
@@ -157,10 +157,10 @@ namespace cube_lut
         }
 
        
-        private static SKColor LookUP(double ri, double gi, double bi)
-        {
-          return  pixelArray[(int)(Math.Round(ri * redStep + gi * greenStep + bi * blueStep))];
-        }
+        //private static SKColor LookUP(double ri, double gi, double bi)
+        //{
+        //  return  pixelArray[(int)(Math.Round(ri * redStep + gi * greenStep + bi * blueStep))];
+        //}
     }
 
 }
