@@ -46,19 +46,19 @@ namespace cube_lut
             return image;
         }
 
-        static public bool ConvertClutImageToCube(string imagepath, out List<string> Cube)
+        static public List<string> ConvertClutImageToCube(string imagepath)
         {
             var bitmap = SKBitmap.Decode(imagepath);
-            Cube = new List<string>();
+            var Cube = new List<string>();
             List<string> data = new List<string>();
-            if (bitmap.Width != bitmap.Height) return false;
+            if (bitmap.Width != bitmap.Height) return Cube;
 
             var lutSize = Math.Round(Math.Pow(bitmap.Width, 1 / 3.0));
             var count = (int)(Math.Pow(lutSize, 6));
-            if (bitmap.Pixels.Length != count) return false;
+            if (bitmap.Pixels.Length != count) return Cube;
 
 
-            data.Add(string.Format("LUT_3D_SIZE  {0}", lutSize * lutSize));
+            data.Add(string.Format("LUT_3D_SIZE  {0}", lutSize*lutSize));
             data.Add("DOMAIN_MIN 0.0 0.0 0.0");
             data.Add("DOMAIN_MAX 1.0 1.0 1.0");
 
@@ -66,34 +66,34 @@ namespace cube_lut
             redStep = (int)lutSize + 1;
             greenStep = (int)Math.Pow(lutSize, 2) * ((int)lutSize + 1);
             blueStep = (int)Math.Pow(lutSize, 4) * ((int)lutSize + 1);
-            // {r, (3 * g + b)/4.0, b}
-            //int j = 0;
-            for (double blue = 0; blue < lutSize; blue++)
+            pixelArray = bitmap.Pixels;
+
+            //for (double blue = 0; blue < lutSize; blue++)
+            //{
+            //    for (double green = 0; green < lutSize; green++)
+            //    {
+            //        for (double red = 0; red < lutSize; red++)
+            //        {
+            //            var i = LookUP(red/lutSize,green/lutSize,blue/lutSize );
+            //            data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
+            //        }
+            //    }
+            //}
+
+            foreach (var i in bitmap.Pixels)
             {
-                for (double green = 0; green < lutSize; green++)
-                {
-                    for (double red = 0; red < lutSize; red++)
-                    {
-                        var i = LookUP(red/lutSize,green/lutSize,blue/lutSize );
-                        data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
-                    }
-                }
+                data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
             }
 
-            //foreach (var i in bitmap.Pixels)
-            //{
-            //    data.Add(string.Format("{0} {1} {2}", i.Red / 255.0, i.Green / 255.0, i.Blue / 255.0));
-            //}
-            Cube = data;
 
 
 
 
 
-            return true;
+            return data;
         }
 
-
+       
         private static SKColor LookUP(double ri, double gi, double bi)
         {
           return  pixelArray[(int)(Math.Round(ri * redStep + gi * greenStep + bi * blueStep))];

@@ -1,4 +1,5 @@
 ﻿using cube_lut;
+using Microsoft.Win32;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -30,44 +31,81 @@ namespace cube_lut_wpf
 
         private void GenerateImage_Click(object sender, RoutedEventArgs e)
         {
-
-            var image = Hald.GenerateClutImage(8);
-
-
-            IntPtr len;
+            int lut_size = 16;
+            var image = Hald.GenerateClutImage(lut_size);
             SKImage img = SKImage.FromBitmap(image);
-
-
             SKData data = img.Encode(SKImageEncodeFormat.Png, 90);
-            using (FileStream fs = new FileStream("test.png", FileMode.Create))
+            SaveFileDialog savefile = new SaveFileDialog();
+            savefile.FileName = string.Format("identity_{0}.png", lut_size);
+            savefile.Filter = "PNG files (*.png)|*.png";
+            if (savefile.ShowDialog() == true)
             {
-                data.SaveTo(fs);
+                using (FileStream fs = new FileStream(savefile.FileName, FileMode.Create))
+                {
+                    data.SaveTo(fs);
+                }
             }
+
+           
         }
 
         private void GenerateCube_Click(object sender, RoutedEventArgs e)
         {
-            //  string mydocpath =
-            //  Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+           
             var lines = new List<string>();
             var filename = "test.cube";
-            if (Hald.ConvertClutImageToCube("test.jpg", out lines))
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            
+            //dlg.Filter = "JPG Files (*.jpg)|*.jpg | JPEG Files (*.jpeg)|*.jpeg";
+
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+
+            // Get the selected file name and display in a TextBox 
+            if (result != null)
             {
-                //using (StreamWriter outputFile = new StreamWriter("test.cube"))
-                //{
-                //    foreach (string line in lines)
-                //        outputFile.WriteLine(line);
-                //}
-
-                if (File.Exists(filename))
+                if ((bool)result)
                 {
-                    File.Delete(filename);
-                }
-                File.WriteAllLines(filename, lines.ToArray());
+                    // Open document 
 
+                   lines= Hald.ConvertClutImageToCube(dlg.FileName);
+                    
+                    if(lines.Count>0)
+                    {
+
+                        SaveFileDialog savefile = new SaveFileDialog();
+
+                        var name=System.IO.Path.GetFileNameWithoutExtension(dlg.FileName);
+                        savefile.FileName = string.Format(name+".cube");
+                        savefile.Filter = "CUBE files (*.cube)|*.cube";
+
+                        if (savefile.ShowDialog() == true)
+                        {
+                            if (File.Exists(savefile.FileName))
+                            {
+                                File.Delete(savefile.FileName);
+                            }
+                            File.WriteAllLines(savefile.FileName, lines.ToArray());
+
+                        }                    
+                    }
+                    else
+                    {
+                        //error
+                    }
+                    
+                }
             }
+
+            
 
 
         }
+
+
+       
     }
 }
