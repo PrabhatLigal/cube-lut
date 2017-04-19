@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:cube_lut_wpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="DarkColor" Color="#555555"/>
+        <SolidColorBrush x:Key="LightColor" Color="#EEEEEE"/>
     </Application.Resources>
 </Application>

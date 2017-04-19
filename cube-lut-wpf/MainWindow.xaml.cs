@@ -35,10 +35,39 @@ namespace cube_lut_wpf
 
         private void GenerateImage_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            button.IsEnabled = false;
+            ProgressBar.Visibility = Visibility.Visible;
+
+
             int lut_size = (int)LutSizeCombo.SelectedItem;
+
+
+            Task.Run(
+
+                async () =>
+                {
+                   await GenerateFunction(lut_size);
+                }
+                );
+
+            
+        }
+
+        async Task GenerateFunction( int lut_size)
+        {
+            SKData data = new SKData();
+            //Task.Run(() => {
+
             var image = Hald.GenerateClutImage(lut_size);
             SKImage img = SKImage.FromBitmap(image);
-            SKData data = img.Encode(SKImageEncodeFormat.Png, 90);
+            data = img.Encode(SKImageEncodeFormat.Png, 90);
+
+
+            //  });
+
+
+
             SaveFileDialog savefile = new SaveFileDialog();
             savefile.FileName = string.Format("identity_{0}.png", lut_size);
             savefile.Filter = "PNG files (*.png)|*.png";
@@ -49,22 +78,34 @@ namespace cube_lut_wpf
                     data.SaveTo(fs);
                 }
             }
+            EndAnimate();
 
-           
         }
+
+        void EndAnimate()
+        {
+            Dispatcher.Invoke(() => {
+
+                ProgressBar.Visibility = Visibility.Collapsed;
+                GenerateImage.IsEnabled = true;
+                GenerateCube.IsEnabled = true;
+
+            });
+            
+        }
+        
 
         private void GenerateCube_Click(object sender, RoutedEventArgs e)
         {
-           
-            var lines = new List<string>();
-            var filename = "test.cube";
+            var button = sender as Button;
+            button.IsEnabled = false;
+            ProgressBar.Visibility = Visibility.Visible;
 
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            Error.Text = "";
+          
             
-            //dlg.Filter = "JPG Files (*.jpg)|*.jpg | JPEG Files (*.jpeg)|*.jpeg";
-
-
-            // Display OpenFileDialog by calling ShowDialog method 
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+   
             Nullable<bool> result = dlg.ShowDialog();
 
 
@@ -74,41 +115,82 @@ namespace cube_lut_wpf
                 if ((bool)result)
                 {
                     // Open document 
-
-                   lines= Hald.ConvertClutImageToCube(dlg.FileName);
-                    
-                    if(lines.Count>0)
+                    var extension = System.IO.Path.GetExtension(dlg.FileName);
+                    if (string.Compare(extension, ".jpg", true) != 0 && string.Compare(extension, ".jpeg", true) != 0 && string.Compare(extension, ".png", true) != 0)
                     {
-
-                        SaveFileDialog savefile = new SaveFileDialog();
-
-                        var name=System.IO.Path.GetFileNameWithoutExtension(dlg.FileName);
-                        savefile.FileName = string.Format(name+".cube");
-                        savefile.Filter = "CUBE files (*.cube)|*.cube";
-
-                        if (savefile.ShowDialog() == true)
-                        {
-                            if (File.Exists(savefile.FileName))
-                            {
-                                File.Delete(savefile.FileName);
-                            }
-                            File.WriteAllLines(savefile.FileName, lines.ToArray());
-
-                        }                    
+                        Error.Text = "Error: Try JPG HALD image only.";
+                        EndAnimate();
+                        return;
                     }
-                    else
+                    try
                     {
-                        //error
+                        Task.Run(
+                            async () => {
+                                await GenerateCubeFile(dlg.FileName);
+                            });
+                        
+                      
+                    }
+                    catch
+                    {
+                        Error.Text = "Error: Converison failed. Try with HALD image only.";
+                        EndAnimate();
                     }
                     
                 }
+                else
+                {
+                    EndAnimate();
+                }
+            }
+            else
+            {
+                EndAnimate();
             }
 
+
             
-
-
         }
 
+
+        async Task GenerateCubeFile(string fileName)
+        {
+            var lines = new List<string>();
+            lines = Hald.ConvertClutImageToCube(fileName);
+            Dispatcher.Invoke(() =>
+            {
+            if (lines.Count > 0)
+            {
+
+              
+                    SaveFileDialog savefile = new SaveFileDialog();
+
+                    var name = System.IO.Path.GetFileNameWithoutExtension(fileName);
+                    savefile.FileName = string.Format(name + ".cube");
+                    savefile.Filter = "CUBE files (*.cube)|*.cube";
+                    if (savefile.ShowDialog() == true)
+                    {
+                        if (File.Exists(savefile.FileName))
+                        {
+                            File.Delete(savefile.FileName);
+                        }
+                        File.WriteAllLines(savefile.FileName, lines.ToArray());
+
+                    }
+               
+               
+            }
+            else
+            {
+                //error
+               
+                    Error.Text = "Error: Converison failed. Try with HALD image only.";
+               
+            }
+            
+                EndAnimate();
+            });
+        }
 
        
     }

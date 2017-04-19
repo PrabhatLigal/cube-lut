@@ -6,22 +6,41 @@
         xmlns:local="clr-namespace:cube_lut_wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Grid>
+    <Grid Name="MainGrid">
+        <Grid.Resources>
+           
+        </Grid.Resources>
+        <Grid Background="{StaticResource DarkColor  }">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button Name="GenerateImage" Click="GenerateImage_Click" Width="100" Height="30" Margin="20">Hald Clut Image</Button>
-                <ComboBox Name="LutSizeCombo" ></ComboBox>
-            </StackPanel>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Name="GenerateCube" Click="GenerateCube_Click" Width="100" Height="30"  Margin="20">Generate Cube</Button>
-            </StackPanel>
+            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" LastChildFill="False" Height="250">
+                <TextBlock Foreground="{StaticResource LightColor}" FontSize="30" DockPanel.Dock="Top">Step 1</TextBlock>
+                <TextBlock Foreground="{StaticResource LightColor}" FontSize="18" TextWrapping="WrapWithOverflow" DockPanel.Dock="Top">
+                    Generate Hald Image and apply color correction and save as JPG.</TextBlock>
+
+
+                <ComboBox Name="LutSizeCombo"  DockPanel.Dock="Bottom" Width="150" Foreground="{StaticResource DarkColor}"></ComboBox>
+                <TextBlock Foreground="{StaticResource LightColor}" FontSize="18" TextWrapping="WrapWithOverflow" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+                    Choose LUT Size</TextBlock>
+                <Button Name="GenerateImage" Click="GenerateImage_Click" Width="150" Height="30" Margin="20" DockPanel.Dock="Bottom" Foreground="{StaticResource DarkColor}">
+                    Generate HALD Image</Button>
+                
+            </DockPanel>
+            <DockPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="250">
+                <TextBlock Foreground="{StaticResource LightColor}" FontSize="30" DockPanel.Dock="Top">Step 2</TextBlock>
+                <TextBlock Foreground="{StaticResource LightColor}" FontSize="18" TextWrapping="WrapWithOverflow" DockPanel.Dock="Top">
+                    Choose corrected Hald image to convert  3D LUT (.cube)</TextBlock>
+
+                <Button Name="GenerateCube" Click="GenerateCube_Click" Width="150" Height="30"  Margin="20" DockPanel.Dock="Bottom" Foreground="{StaticResource DarkColor}">Generate Cube</Button>
+            </DockPanel>
+
+            
         </Grid>
-       
-        
+
+        <TextBlock Name="Error" Foreground="{StaticResource LightColor}" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Center">sd</TextBlock>
+        <ProgressBar Name="ProgressBar" Width="{Binding ElementName=MainGrid,Path=ActualWidth}" Height="5" HorizontalAlignment="Center" VerticalAlignment="Top" IsIndeterminate="True" Foreground="{StaticResource DarkColor}" Visibility="Collapsed"></ProgressBar>
     </Grid>
 </Window>

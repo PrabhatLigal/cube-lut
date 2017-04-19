@@ -48,39 +48,7 @@ namespace cube_lut
             return image;
         }
 
-        //static public void Generatelookup(int level)
-        //{
-        //    lookup = new Dictionary<SKColor, int>();
-        //    var cube_size = level * level;
-        //    var image_size = level * level * level;
-        //    //data = p = malloc((sizeof *data) * image_size * image_size * 3);
-        //    var image = new SKBitmap(image_size, image_size);
 
-        //    int i = 0;
-        //    for (var blue = 0; blue < cube_size; blue++)
-        //    {
-        //        for (var green = 0; green < cube_size; green++)
-        //        {
-        //            for (var red = 0; red < cube_size; red++)
-        //            {
-        //                var R = (byte)(((float)red / (float)(cube_size - 1)) * 255);
-        //                var G = (byte)(((float)green / (float)(cube_size - 1)) * 255);
-        //                var B = (byte)(((float)blue / (float)(cube_size - 1)) * 255);
-
-        //                // var pos = red + green + blue;
-
-        //               // var x = i % image_size;
-        //               // var y = i / image_size;
-        //                var color = new SKColor(R, G, B);
-        //                lookup.Add(color, i);
-        //               // image.SetPixel(x, y, color);
-        //                i++;
-        //            }
-        //        }
-        //    }
-
-       
-       // }
 
         static public void GenerateIdentityMap(int level)
         {
@@ -127,18 +95,7 @@ namespace cube_lut
             data.Add(string.Format("LUT_3D_SIZE  {0}", lutSize));
             data.Add("DOMAIN_MIN 0.0 0.0 0.0");
             data.Add("DOMAIN_MAX 1.0 1.0 1.0");
-
-
-            //var cubesize = lutSize * lutSize;
-            //redStep = (int)cubesize;
-            //greenStep = (int)Math.Pow(cubesize, 2) * ((int)cubesize );
-            //blueStep = (int)Math.Pow(cubesize, 4) * ((int)cubesize + 1);
             pixelArray = bitmap.Pixels;
-
-
-            //Generatelookup((int)lutSize);
-           
-           
 
              GenerateIdentityMap((int)lutSize);
 
@@ -157,10 +114,7 @@ namespace cube_lut
         }
 
        
-        //private static SKColor LookUP(double ri, double gi, double bi)
-        //{
-        //  return  pixelArray[(int)(Math.Round(ri * redStep + gi * greenStep + bi * blueStep))];
-        //}
+   
     }
 
 }
