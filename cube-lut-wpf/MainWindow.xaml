@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:cube_lut_wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Doko-Cube" Height="350" Width="525">
     <Grid Name="MainGrid">
         <Grid.Resources>
            
@@ -40,7 +40,7 @@
             
         </Grid>
 
-        <TextBlock Name="Error" Foreground="{StaticResource LightColor}" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Center">sd</TextBlock>
+        <TextBlock Name="Error" Foreground="{StaticResource LightColor}" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
         <ProgressBar Name="ProgressBar" Width="{Binding ElementName=MainGrid,Path=ActualWidth}" Height="5" HorizontalAlignment="Center" VerticalAlignment="Top" IsIndeterminate="True" Foreground="{StaticResource DarkColor}" Visibility="Collapsed"></ProgressBar>
     </Grid>
 </Window>
